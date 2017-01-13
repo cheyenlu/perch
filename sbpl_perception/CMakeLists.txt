@@ -12,6 +12,8 @@ project(sbpl_perception)
 set(ROS_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Leo add
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
 # set(CMAKE_COLOR_MAKEFILE ON)
 set(ROS_COMPILE_FLAGS "-W -Wno-reorder")
 

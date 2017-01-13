@@ -17,18 +17,27 @@ using std::vector;
 using std::string;
 using namespace sbpl_perception;
 
+#define MAX_X 0.17
+#define MAX_Y 0.17
+#define MAX_Z 0.85
+
+#define MIN_X -0.2
+#define MIN_Y -0.2
+#define MIN_Z 0.55
+
 int main(int argc, char **argv) {
   ros::init(argc, argv, "object_localizer_client_node");
   // The camera pose and preprocessed point cloud, both in world frame.
   Eigen::Isometry3d camera_pose;
-  camera_pose.matrix() <<
+  /*camera_pose.matrix() <<
                        0.00974155,   0.997398, -0.0714239,  -0.031793,
                                      -0.749216,  -0.040025,  -0.661116,   0.743224,
                                      -0.662254,  0.0599522,   0.746877,   0.878005,
-                                     0,          0,          0,          1;
+                                     0,          0,          0,          1;*/
+  camera_pose.setIdentity();
 
   const string demo_pcd_file = ros::package::getPath("sbpl_perception") +
-                               "/demo/demo_pointcloud.pcd";
+                               "/demo/crop.pcd";
   // Objects for storing the point clouds.
   pcl::PointCloud<PointT>::Ptr cloud_in(new PointCloud);
 
@@ -39,17 +48,24 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  cloud_in->header.frame_id = "world";
+  //std::cout << "PCD height: " << cloud_in->height << std::endl;
+  //std::cout << "PCD width: " << cloud_in->width << std::endl;
+  //float minX = INT_MAX, maxX = INT_MIN, minY = INT_MAX, maxY = INT_MIN, minZ = INT_MAX, maxZ = INT_MIN;
+
   ros::NodeHandle nh;
   ros::ServiceClient client =
     nh.serviceClient<object_recognition_node::LocalizeObjects>("object_localizer_service");
   object_recognition_node::LocalizeObjects srv;
   auto &req = srv.request;
-  req.x_min = -0.179464;
-  req.x_max = 0.141014;
-  req.y_min = -0.397647;
-  req.y_max = 0.0103991;
+  req.x_min = MIN_X;
+  req.x_max = MAX_X;
+  req.y_min = MIN_Y;
+  req.y_max = MAX_Y;
   req.support_surface_height = 0.0;
-  req.object_ids = vector<string>({"tilex_spray", "tide", "glass_7"});
+  //req.object_ids = vector<string>({"tilex_spray", "tide", "glass_7"});
+  //req.object_ids = vector<string>({"tilex_spray", "tide", "glass_7", "vf_paper_bowl"});
+  req.object_ids = vector<string>({"bowl_1"});
   tf::matrixEigenToMsg(camera_pose.matrix(), req.camera_pose);
   pcl::toROSMsg(*cloud_in, req.input_organized_cloud);
 

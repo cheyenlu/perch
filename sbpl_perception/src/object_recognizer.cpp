@@ -22,7 +22,7 @@ ObjectRecognizer::ObjectRecognizer(std::shared_ptr<boost::mpi::communicator>
                                    mpi_world) : planner_params_(0.0) {
 
   mpi_world_ = mpi_world;
-
+  //std::cout << "check 0" << std::endl;
   vector<ModelMetaData> model_bank_vector;
   double search_resolution_translation = 0.0;
   double search_resolution_yaw = 0.0;

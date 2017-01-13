@@ -21,11 +21,13 @@ using std::string;
 using namespace sbpl_perception;
 
 int main(int argc, char **argv) {
+  ros::init(argc, argv, "perch_demo");
+  //std::cout << "Check Point 0" << std::endl << std::flush;
   boost::mpi::environment env(argc, argv);
   std::shared_ptr<boost::mpi::communicator> world(new
                                                   boost::mpi::communicator());
 
-  ros::init(argc, argv, "perch_demo");
+  //ros::init(argc, argv, "perch_demo");
   ObjectRecognizer object_recognizer(world);
 
   // The camera pose and preprocessed point cloud, both in world frame.
@@ -37,7 +39,7 @@ int main(int argc, char **argv) {
                        0,          0,          0,          1;
 
   const string demo_pcd_file = ros::package::getPath("sbpl_perception") +
-                               "/demo/demo_pointcloud.pcd";
+                               "/demo/crop.pcd";
   // Objects for storing the point clouds.
   pcl::PointCloud<PointT>::Ptr cloud_in(new PointCloud);
 
@@ -50,15 +52,15 @@ int main(int argc, char **argv) {
 
   RecognitionInput input;
   // Set the bounds for the the search space (in world frame).
-  input.x_min = -0.179464;
-  input.x_max = 0.141014;
-  input.y_min = -0.397647;
-  input.y_max = 0.0103991;
+  input.x_min = -0.2;
+  input.x_max = 0.17;
+  input.y_min = -0.2;
+  input.y_max = 0.17;
   input.table_height = 0.0;
   // Set the camera pose, list of models in the scene, and the preprocessed
   // point cloud.
   input.camera_pose = camera_pose;
-  input.model_names = vector<string>({"tilex_spray", "tide", "glass_7"});
+  input.model_names = vector<string>({"bowl_1"});
   input.cloud = *cloud_in;
 
   vector<Eigen::Affine3f> object_transforms;
